@@ -23,21 +23,21 @@ def parse_orders(lines):
 
 
 def dedupe_orders(orders):
-    """Drop repeat order_ids, keeping the first one seen."""
-    seen = set()
+    """Drop repeat order_ids, keeping the first one seen, in arrival order."""
+    seen = []
     unique = []
     for order in orders:
         if order.order_id not in seen:
-            seen.add(order.order_id)
+            seen.append(order.order_id)
             unique.append(order)
     return unique
 
 
 def order_totals(orders):
     """Amount plus regional tax for each order."""
+    rates = dict(TAX_TABLE)
     totals = []
     for order in orders:
-        rates = {region: rate for region, rate in TAX_TABLE}
         totals.append(round(order.amount * (1 + rates[order.region]), 2))
     return totals
 
